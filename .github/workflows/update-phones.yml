@@ -1,0 +1,28 @@
+name: Update phone database
+
+on:
+  schedule:
+    - cron: '30 0 * * *'
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: daily or backfill
+        default: daily
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: node scripts/update.js
+        env:
+          MODE: ${{ github.event.inputs.mode || (github.event.schedule == '30 0 * * *' && 'daily' || 'backfill') }}
+          MAX_PHONES: 10
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
