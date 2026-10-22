@@ -3,12 +3,7 @@ name: Update phone database
 on:
   schedule:
     - cron: '30 0 * * *'
-    - cron: '0 */12 * * *'
   workflow_dispatch:
-    inputs:
-      mode:
-        description: daily or backfill
-        default: daily
 
 jobs:
   update:
@@ -22,8 +17,7 @@ jobs:
       - run: npm install
       - run: node scripts/update.js
         env:
-          MODE: ${{ github.event.inputs.mode || (github.event.schedule == '30 0 * * *' && 'daily' || 'backfill') }}
-          MAX_PHONES: 10
+          MAX_PHONES: 15
           GEMINI_MODEL: gemini-3.8-flash
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
