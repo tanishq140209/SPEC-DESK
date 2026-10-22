@@ -1,0 +1,9 @@
+{
+  "name": "gadget-updater",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "firebase-admin": "^13.0.0"
+  }
+}
