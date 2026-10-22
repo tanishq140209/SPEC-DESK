@@ -21,8 +21,9 @@ jobs:
           node-version: 20
       - run: npm install
       - run: node scripts/update.js
-        env:
-          MODE: ${{ github.event.inputs.mode || (github.event.schedule == '30 0 * * *' && 'daily' || 'backfill') }}
+    env:
+          MODE: ${{ ... }}
           MAX_PHONES: 10
+          GEMINI_MODEL: gemini-3.8-flash
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
