@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SpecDeck – compare any gadget</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2fa;--surf:#fff;--surf2:#dfe7f7;--line:#8fa2cc;--tx:#07102a;--mut:#38466a;--ac:#005fa3;--ac2:#5236e0;--best:#00613b;--bestbg:#a8f0cc;--bestfg:#03402a;--worsebg:#ffcfa8;--worsefg:#6b2800;--diff:#fff0b8;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#03060d;--surf:#0c1328;--surf2:#18244a;--line:#4a5f9a;--tx:#fff;--mut:#c2cdee;--ac:#4be8ff;--ac2:#9a8cff;--best:#6dffc0;--bestbg:#12a066;--bestfg:#fff;--worsebg:#b34a14;--worsefg:#fff;--diff:#1d2a58;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#03060d;--surf:#0c1328;--surf2:#18244a;--line:#4a5f9a;--tx:#fff;--mut:#c2cdee;--ac:#4be8ff;--ac2:#9a8cff;--best:#6dffc0;--bestbg:#12a066;--bestfg:#fff;--worsebg:#b34a14;--worsefg:#fff;--diff:#1d2a58;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Sora,system-ui,sans-serif;line-height:1.5;
+background-image:radial-gradient(900px 400px at 85% -10%,color-mix(in srgb,var(--ac2) 22%,transparent),transparent),radial-gradient(700px 400px at 0 0,color-mix(in srgb,var(--ac) 14%,transparent),transparent)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;display:flex;justify-content:space-between;align-items:center;padding:14px 5vw;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:1.4rem;letter-spacing:-.02em}
+.logo b{color:var(--ac)}
+.right{display:flex;gap:8px;position:relative}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{border:1px solid var(--line);background:var(--surf);padding:8px 16px;border-radius:999px;font-size:.9rem}
+.btn.pri{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#06101f;border:0;font-weight:600}
+.btn:focus-visible,.tab:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.menu{position:absolute;right:0;top:46px;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:8px;min-width:200px;display:none}
+.menu.open{display:block}
+.menu button{display:block;width:100%;text-align:left;background:none;border:0;padding:10px;border-radius:8px}
+.menu button:hover{background:var(--surf2)}
+main{max-width:1180px;margin:0 auto;padding:24px 5vw 60px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.tab{border:1px solid var(--line);background:transparent;color:var(--mut);padding:8px 18px;border-radius:999px;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--surf2);color:var(--tx);border-color:var(--ac)}
+h2{font-size:1.15rem;margin:34px 0 12px;letter-spacing:-.01em}
+.tray{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;perspective:900px}
+.slot{min-height:150px;border:1px dashed var(--line);border-radius:16px;padding:14px;background:var(--surf);position:relative;transition:transform .15s ease-out;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transform-style:preserve-3d}
+.slot.full{border-style:solid;border-color:var(--ac);box-shadow:0 10px 30px -12px var(--ac)}
+.slot input{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--surf2);color:var(--tx);font:inherit;font-size:.85rem}
+.res{list-style:none;margin:6px 0 0;padding:0;max-height:130px;overflow:auto;display:none}
+.slot:focus-within .res{display:block}
+.res li button{width:100%;text-align:left;background:none;border:0;padding:7px 6px;font-size:.85rem;border-radius:6px}
+.res li button:hover{background:var(--surf2)}
+.slot h3{margin:0;font-size:1rem}
+.slot .meta{color:var(--mut);font-size:.8rem}
+.x{position:absolute;top:8px;right:10px;background:none;border:0;color:var(--mut);font-size:1.1rem}
+.price{font-weight:800;font-size:1.3rem;margin-top:10px}
+.tablewrap{overflow-x:auto;margin-top:16px;border:1px solid var(--line);border-radius:14px;background:var(--surf)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.9rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:400;width:150px}
+tr:last-child th,tr:last-child td{border-bottom:0}
+td.best{color:var(--best);font-weight:600}
+.hint{color:var(--mut);font-size:.9rem;margin-top:14px}
+.row{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x proximity}
+.card{flex:0 0 190px;scroll-snap-align:start;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.card .n{font-weight:600}
+.card .m{color:var(--mut);font-size:.8rem}
+.bar{height:6px;border-radius:6px;background:var(--surf2);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2))}
+.sc{display:flex;justify-content:space-between;font-size:.85rem}
+.card .btn{margin-top:auto;font-size:.8rem;padding:6px 10px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;place-items:center;z-index:20}
+.modal.open{display:grid}
+.box{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:24px;width:min(360px,90vw)}
+.box input{width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--surf2);color:var(--tx);font:inherit}
+.note{color:var(--mut);font-size:.8rem}
+:root[data-theme="light"] .btn.pri{color:#fff}
+.bar2{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.lg{font-size:.8rem;padding:4px 12px;border-radius:999px;font-weight:700;border:1px solid var(--line)}
+:root{--worse:#b3470a}
+:root[data-theme="dark"]{--worse:#ff9a4d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--worse:#ff9a4d}}
+.hl tr td.best{color:var(--best);font-weight:800}
+.hl tr td.worst{color:var(--worse);font-weight:700}
+.sec th{background:var(--surf2);color:var(--ac);font-weight:700;font-size:.85rem;width:auto}
+td{vertical-align:top}
+@media (max-width:760px){.tray{grid-template-columns:repeat(2,1fr)}}
+@media (prefers-reduced-motion:reduce){.slot{transition:none;transform:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Spec<b>Deck</b></div>
+  <div class="right">
+    <button class="btn" id="setBtn" aria-haspopup="true">Settings</button>
+    <button class="btn pri" id="logBtn">Log in</button>
+    <div class="menu" id="menu">
+      <button id="themeBtn">Switch theme</button>
+      <button id="clearBtn">Clear comparison</button>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <h2>Compare up to 4 devices</h2>
+  <div class="tray" id="tray"></div>
+  <div id="cmp"></div>
+  <div id="cats"></div>
+  <p class="note" style="margin-top:30px">Specs come from Wikipedia and are structured by AI, so please check each phone’s Source link. Prices are in ₹.</p>
+</main>
+<div class="modal" id="modal"><div class="box">
+  <h2 style="margin-top:0">Log in</h2>
+  <label class="note" for="em">Email</label><input id="em" type="email" placeholder="you@example.com">
+  <button class="btn pri" id="closeM" style="width:100%">Continue</button>
+  <p class="note">Real login (Firebase Auth) comes in the next step.</p>
+</div></div>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+// 1) PASTE YOUR FIREBASE WEB CONFIG HERE (Firebase > Project settings > Your apps)
+const firebaseConfig = {
+  apiKey: "AIzaSyCEdnVZUrKDM3S4d6c5mCo5hhWEkEsTnw8",
+  authDomain: "spec-desk-140209.firebaseapp.com",
+  projectId: "spec-desk-140209",
+  storageBucket: "spec-desk-140209.firebasestorage.app",
+  messagingSenderId: "701580149446",
+  appId: "1:701580149446:web:7166c6ba858b6169dd4dc7"
+};
+
+const KEYS=['screenSize','resolution','panel','refreshRate','chipset','ram','storage','battery','charging','rearCamera','frontCamera','video','weight','os','waterResistance','ramType','storageType','expandableStorage','network','sim','wifi','bluetooth','nfc','usb','wirelessCharging','peakBrightness','protection','fingerprint','speakers','headphoneJack','softwareUpdates'];
+const LABELS=['Screen size','Resolution','Panel','+Refresh rate','Chipset','+RAM','+Storage','+Battery','+Charging','Rear camera','Front camera','Video','-Weight','OS','Water resistance','RAM type','Storage type','Expandable storage','Network','SIM','Wi-Fi','Bluetooth','NFC','USB port','Wireless charging','+Peak brightness','Display protection','Fingerprint sensor','Speakers','Headphone jack','+Software updates','Launch year'];
+const GROUPS={0:'Display',4:'Performance',7:'Battery',9:'Camera',12:'Build',15:'Memory & storage',18:'Connectivity',25:'Display & extras'};
+const CATS=[['gaming','Gaming'],['camera','Camera'],['battery','Battery life'],['longTerm','Long-term usage'],['multitasking','Multitasking']];
+var D=[],sel=[],hl=true;
+var $=function(i){return document.getElementById(i)};
+var inr=function(p){return p?'\u20b9'+Number(p).toLocaleString('en-IN'):'Price N/A'};
+function num(v){var s=String(v).replace(/,/g,''),m=s.match(/[\d.]+/),x=m?parseFloat(m[0]):NaN;if(/TB/.test(s))x*=1024;else if(/MB/.test(s))x/=1024;if(/kg/.test(s))x*=1000;return x}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+async function load(){
+  try{var c=JSON.parse(localStorage.getItem('sd_cache')||'null');if(c&&Date.now()-c.t<216e5)return c.d}catch(e){}
+  var db=getFirestore(initializeApp(firebaseConfig));
+  var snap=await getDocs(collection(db,'devices'));
+  var d=snap.docs.map(function(x){var o=x.data();return{name:o.name,brand:o.brand,launchDate:o.launchDate,specs:o.specs,scores:o.scores,priceINR:o.priceINR,sourceUrl:o.sourceUrl}});
+  try{localStorage.setItem('sd_cache',JSON.stringify({t:Date.now(),d:d}))}catch(e){}
+  return d;
+}
+function build(raw){
+  D=raw.filter(function(x){return x.name&&x.brand}).map(function(x,i){
+    var sp=x.specs||{},v=KEYS.map(function(k){return sp[k]==null?'-':String(sp[k])});
+    v.push(x.launchDate?String(x.launchDate).slice(0,4):'-');
+    return{id:i,n:x.name,b:x.brand,p:x.priceINR||null,s:x.scores||{},v:v,url:x.sourceUrl}});
+}
+function list(){return D}
+function tabs(){$('tabs').innerHTML='<button class="tab" role="tab" aria-selected="true">Phones ('+D.length+')</button>'}
+function add(id){if(sel.length<4&&sel.indexOf(id)<0){sel.push(id);draw()}}
+function tray(){
+  var h='';
+  for(var i=0;i<4;i++){
+    var d=D[sel[i]];
+    if(d){h+='<div class="slot full"><button class="x" data-rm="'+d.id+'" aria-label="Remove">\u00d7</button><h3>'+esc(d.n)+'</h3><div class="meta">'+esc(d.b)+(d.url?' \u00b7 <a href="'+esc(d.url)+'" target="_blank" rel="noopener" style="color:var(--ac)">Source</a>':'')+'</div><div class="price">'+inr(d.p)+'</div></div>'}
+    else{h+='<div class="slot"><input placeholder="+ Add phone" data-q><ul class="res"></ul></div>'}
+  }
+  $('tray').innerHTML=h;fill();
+}
+function fill(){
+  document.querySelectorAll('.slot:not(.full)').forEach(function(sl){
+    var q=sl.querySelector('input').value.toLowerCase();
+    sl.querySelector('.res').innerHTML=list().filter(function(d){return sel.indexOf(d.id)<0&&(d.n+' '+d.b).toLowerCase().indexOf(q)>-1}).slice(0,30).map(function(d){return '<li><button data-add="'+d.id+'">'+esc(d.n)+'</button></li>'}).join('')||'<li class="note" style="padding:6px">No match</li>';
+  });
+}
+function cmp(){
+  var el=$('cmp');
+  if(sel.length<2){el.innerHTML='<p class="hint">Pick at least two phones to see the side-by-side table.</p>';return}
+  var ds=sel.map(function(i){return D[i]}),cs=ds.length+1;
+  function row(label,fn,best){
+    var vals=ds.map(fn),nums=best?vals.map(num):null,ok=nums&&nums.every(isFinite);
+    var hi=ok?Math.max.apply(null,nums):null,lo=ok?Math.min.apply(null,nums):null;
+    var diff=new Set(vals).size>1,bi=best==='min'?lo:hi,wi=best==='min'?hi:lo;
+    return '<tr'+(diff?' class="diff"':'')+'><th>'+label+'</th>'+vals.map(function(v,i){
+      var c='',m='';
+      if(ok&&diff&&nums[i]===bi){c='best';m=hl?' \u25b2':''}
+      else if(ok&&diff&&nums[i]===wi){c='worst';m=hl?' \u25bc':''}
+      return '<td'+(c?' class="'+c+'"':'')+'>'+(label==='Price'?inr(v):esc(v))+m+'</td>'}).join('')+'</tr>';
+  }
+  var bar='<div class="bar2"><button class="btn" id="hlBtn" aria-pressed="'+hl+'">Highlight differences: '+(hl?'On':'Off')+'</button>'+(hl?'<span class="lg" style="color:var(--best)">\u25b2 Better</span><span class="lg" style="color:var(--worse)">\u25bc Weaker</span>':'')+'</div>';
+  var h=bar+'<div class="tablewrap'+(hl?' hl':'')+'"><table><tr><th></th>'+ds.map(function(d){return '<td><b>'+esc(d.n)+'</b></td>'}).join('')+'</tr>';
+  h+=row('Price',function(d){return d.p},'min');
+  LABELS.forEach(function(l,k){
+    if(GROUPS[k])h+='<tr class="sec"><th colspan="'+cs+'">'+GROUPS[k]+'</th></tr>';
+    var m=l.charAt(0),pm=m==='+'||m==='-';
+    h+=row(pm?l.slice(1):l,function(d){return d.v[k]},m==='+'?'max':m==='-'?'min':null);
+  });
+  h+='<tr class="sec"><th colspan="'+cs+'">Category scores</th></tr>';
+  CATS.forEach(function(c){h+=row(c[1]+' score',function(d){return d.s[c[0]]==null?'-':d.s[c[0]]},'max')});
+  el.innerHTML=h+'</table></div>';
+}
+function cats(){
+  var h='';
+  CATS.forEach(function(c){
+    var top=list().filter(function(d){return d.s[c[0]]>0}).sort(function(a,b){return b.s[c[0]]-a.s[c[0]]}).slice(0,8);
+    if(!top.length)return;
+    h+='<h2>'+c[1]+'</h2><div class="row">'+top.map(function(d){
+      return '<div class="card"><div class="n">'+esc(d.n)+'</div><div class="m">'+esc(d.b)+' \u00b7 '+inr(d.p)+'</div><div class="sc"><span>'+c[1]+'</span><b>'+d.s[c[0]]+'</b></div><div class="bar"><i style="width:'+d.s[c[0]]+'%"></i></div><button class="btn" data-add="'+d.id+'">+ Compare</button></div>'}).join('')+'</div>';
+  });
+  $('cats').innerHTML=h||'<p class="hint">No category scores yet.</p>';
+}
+function draw(){tabs();tray();cmp();cats()}
+document.addEventListener('click',function(e){
+  var t=e.target.closest('button');
+  if(!t){$('menu').classList.remove('open');return}
+  if(t.dataset.add!==undefined)add(+t.dataset.add);
+  else if(t.dataset.rm!==undefined){sel.splice(sel.indexOf(+t.dataset.rm),1);draw()}
+  else if(t.id==='setBtn'){$('menu').classList.toggle('open')}
+  else if(t.id==='themeBtn'){var r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'}
+  else if(t.id==='clearBtn'){sel=[];draw()}
+  else if(t.id==='hlBtn'){hl=!hl;cmp()}
+  else if(t.id==='logBtn'){$('modal').classList.add('open')}
+  else if(t.id==='closeM'){$('modal').classList.remove('open')}
+});
+document.addEventListener('input',function(e){if(e.target.matches('[data-q]'))fill()});
+$('tray').addEventListener('mousemove',function(e){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  var s=e.target.closest('.slot');if(!s)return;
+  var r=s.getBoundingClientRect();
+  s.style.setProperty('--ry',((e.clientX-r.left)/r.width-.5)*10+'deg');
+  s.style.setProperty('--rx',(.5-(e.clientY-r.top)/r.height)*10+'deg');
+});
+$('tray').addEventListener('mouseout',function(e){var s=e.target.closest('.slot');if(s){s.style.setProperty('--rx','0deg');s.style.setProperty('--ry','0deg')}});
+
+$('cats').innerHTML='<p class="hint">Loading phones\u2026</p>';
+try{build(await load());draw();if(!D.length)$('cats').innerHTML='<p class="hint">No phones in the database yet. Run the GitHub workflow first.</p>'}
+catch(err){console.error(err);$('cats').innerHTML='<p class="hint">Could not load phones. Check the Firebase config in index.html and the Firestore rules.</p>'}
+</script>
+</body>
+</html>
