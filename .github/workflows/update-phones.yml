@@ -3,6 +3,8 @@ name: Update phone database
 on:
   schedule:
     - cron: '30 0 * * *'
+  push:
+    paths: ['sources/**', 'pasted/**']
   workflow_dispatch:
 
 jobs:
