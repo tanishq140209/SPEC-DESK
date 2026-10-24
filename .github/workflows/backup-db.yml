@@ -1,1 +1,30 @@
+name: Backup or clean database
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: backup (save a copy) or clean (delete old Wikipedia data)
+        type: choice
+        options: [backup, clean]
+        default: backup
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: node scripts/backup.js
+        env:
+          MODE: ${{ github.event.inputs.mode }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - uses: actions/upload-artifact@v4
+        if: github.event.inputs.mode == 'backup'
+        with:
+          name: firestore-backup
+          path: backup
 
