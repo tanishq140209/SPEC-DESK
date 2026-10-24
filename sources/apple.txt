@@ -1,0 +1,8 @@
+# Brand | Model | official spec page
+Apple | iPhone 17 | https://www.apple.com/in/iphone-17/specs/
+Apple | iPhone 17 Pro | https://www.apple.com/in/iphone-17-pro/specs/
+Apple | iPhone 17 Pro Max | https://www.apple.com/in/iphone-17-pro/specs/
+Apple | iPhone Air | https://www.apple.com/in/iphone-air/specs/
+Apple | iPhone 16 | https://www.apple.com/in/iphone-16/specs/
+Apple | iPhone 16 Plus | https://www.apple.com/in/iphone-16/specs/
+Apple | iPhone 16e | https://www.apple.com/in/iphone-16e/specs/
